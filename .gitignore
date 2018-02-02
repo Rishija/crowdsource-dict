@@ -1,0 +1,5 @@
+*.out
+*.o
+dict
+myDict
+.DS_Store
