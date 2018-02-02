@@ -133,12 +133,10 @@ void Trie::addString(string str, string addedBy){
             }
         }
         else{
-            if(i!=(n-1))
-                current = readBlock(current.alpha[index]);
-            else{
+            currentBlockNo = current.alpha[index];
+            current = readBlock(current.alpha[index]);
+            if(i == (n-1)){
 //                cout<<"Modifying old at: "<<put_time(gmtime(&currentTime),"%c %Z");
-                currentBlockNo = current.alpha[index];
-                current = readBlock(currentBlockNo);
                 current.isString = true;
                 strcpy(current.addedBy, addedBy.c_str());
                 current.addedAt = currentTime;
