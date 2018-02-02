@@ -163,18 +163,21 @@ Trie::TrieNode Trie::searchString(string str, int start){
     }
     
     int n = (int)str.length();
-    TrieNode currentBlock = readBlock(start);
+    TrieNode current = readBlock(start);
     
     for(int i=0; i<n; ++i){
         int index = getIndex(str[i]);
-        if(currentBlock.alpha[index]){
+        if(current.alpha[index]){
             if(i == (n-1)){
-                currentBlock = readBlock(currentBlock.alpha[index]);
+                int currentBlockNo = current.alpha[index];
+                current = readBlock(currentBlockNo);
+                ++current.searchHits;
+                writeBlock(current, currentBlockNo);
                 // ?? increment search
-                return currentBlock;
+                return current;
             }
             else{
-                currentBlock = readBlock(currentBlock.alpha[index]);
+                current = readBlock(current.alpha[index]);
             }
         }
         else{
