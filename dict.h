@@ -52,16 +52,18 @@ class Trie{
     };
     
     int addNode(int rootBlockNo, int index, bool isString = false, string addedBy = "", time_t time = NULL);
-    TrieNode searchString(string str, int start);
+    int searchString(string str, int start);
     TrieNode readBlock(int blockNo);
     void writeBlock(TrieNode node, int blockNo);
     int getIndex(char a);
+    void findAutoComplete(int blockNo, vector<pair<int, string> > &words, string prefix, int vectorSize, int &insertIndex);
     
 public:
     
     Trie();
     void addString(string str, string addedBy);
     void printStringStatus(string str);
+    bool printAutoComplete(string prefix);
 };
 
 #endif /* dict_h */

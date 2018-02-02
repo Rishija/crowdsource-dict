@@ -151,56 +151,133 @@ void Trie::addString(string str, string addedBy){
  Search for a string in the dictionary
  
  @param str : string to be searched
- @return Pointer to the last node of the string. NULL if string not found
+ @param start : block number from where searching is to be done
+ @return Terminal node and its block address
  */
-Trie::TrieNode Trie::searchString(string str, int start){
+int Trie::searchString(string str, int start){
     
     if(str.empty()){
         TrieNode empty(false, "", NULL);
-        return empty;
+        return -1;
     }
     
     int n = (int)str.length();
     TrieNode current = readBlock(start);
+    int currentBlockNo = start;
     
     for(int i=0; i<n; ++i){
         int index = getIndex(str[i]);
-        if(current.alpha[index]){
+       currentBlockNo = current.alpha[index];
+        if(currentBlockNo){
+            current = readBlock(currentBlockNo);
             if(i == (n-1)){
-                int currentBlockNo = current.alpha[index];
-                current = readBlock(currentBlockNo);
-                ++current.searchHits;
-                writeBlock(current, currentBlockNo);
-                // ?? increment search
-                return current;
-            }
-            else{
-                current = readBlock(current.alpha[index]);
+                // incrementing search hits here also increments search hits for prefixes
+                return currentBlockNo;
             }
         }
-        else{
-            TrieNode empty(false, "", NULL);
-            return empty;
-        }
+        else
+            return -2;
     }
-    // Xcode
-    TrieNode empty(false, "", NULL);
-    return empty;
+    return -1;    // Xcode compulsion
 }
 
 
+/**
+ Prints information about string searched
+ */
 void Trie::printStringStatus(string str){
     
-    TrieNode information = searchString(str, dictAttr.root);
-    
-    if(!(information.isString))
+    int blockNo = searchString(str, dictAttr.root);
+    if(blockNo < 0){
         cout<<"Error not yet added to the dictionary"<<endl;
-    else{
-        struct tm *tt = gmtime(&information.addedAt);
-        cout<<magenta<<bold<<"Error: "<<regular<<str<<endl
-        <<magenta<<bold<<"Added by: "<<regular<<information.addedBy<<endl
-        <<magenta<<bold<<"Added at: "<<regular<<put_time(tt, "%c %Z")<<endl
-        <<magenta<<bold<<"Search Hits: "<<regular<<information.searchHits<<endl
-        <<magenta<<bold<<"Details: "<<regular<<endl;
+        return;
     }
+    TrieNode information = readBlock(blockNo);
+    // increment search hits only for errors, not for prefixes
+    ++information.searchHits;
+    writeBlock(information, blockNo);
+    
+    if(!information.isString){
+        cout<<"Error not yet added to the dictionary"<<endl;
+        return;
+    }
+    
+    struct tm *tt = gmtime(&information.addedAt);
+    cout<<magenta<<bold<<"Error: "<<regular<<str<<endl
+    <<magenta<<bold<<"Added by: "<<regular<<information.addedBy<<endl
+    <<magenta<<bold<<"Added at: "<<regular<<put_time(tt, "%c %Z")<<endl
+    <<magenta<<bold<<"Search Hits: "<<regular<<information.searchHits<<endl
+    <<magenta<<bold<<"Details: "<<regular<<endl;
+}
+
+
+/**
+  Recursively finds all the words with given prefix
+
+ @param blockNo : find words from this block number
+ @param words : add found words to this vector
+ @param prefix : prefix to be searched for
+ @param vectorSize : maximum size of vector words
+ @param insertIndex : next index where word is to be inserted
+ */
+void Trie::findAutoComplete(int blockNo, vector<pair<int, string> > &words, string prefix, int vectorSize, int &insertIndex){
+    
+    if(!blockNo)
+        return;
+    
+    // if vector is full, double its size
+    if(insertIndex == (vectorSize - 1)){
+        vectorSize = vectorSize<<1;
+        words.resize(vectorSize);
+    }
+    
+    TrieNode start(false, "", NULL);
+    start = readBlock(blockNo);
+    // add to vector if current string is in the dictionary
+    if(start.isString){
+        pair<int, string> entry;
+        entry.first = start.searchHits;
+        entry.second = prefix;
+        words[++insertIndex] = entry;
+    }
+    
+    // search recursively in subtree
+    for(int i=0; i<26; ++i){
+        findAutoComplete(start.alpha[i], words, prefix + char(i+97), vectorSize, insertIndex);
+    }
+}
+
+
+/**
+ Prints all words with given prefix
+ 
+ @return : bool
+    false: if no word have given prefix
+    true: otherwise
+ */
+bool Trie::printAutoComplete(string prefix){
+    
+    vector<pair<int, string> >words(dictAttr.vector_size);
+    int insertIndex = -1;
+    int currentBlockNo = searchString(prefix, dictAttr.root);
+    
+    /* no error starts with given prefix
+     isString can be null if `prefix` itself is not an error but prefix for some other
+     */
+    if(currentBlockNo == -2)
+        return false;
+
+    findAutoComplete(currentBlockNo, words, prefix, dictAttr.vector_size, insertIndex);
+    
+    // sort by most searched words
+    sort(words.begin(), words.end(), [](const pair<int, string> &a, const pair<int, string> &b) {
+        return a.first > b.first;
+    });
+    
+    int printCount = min(dictAttr.topResults, insertIndex + 1);
+    for(int i=0; i<printCount; ++i){
+        cout<<words[i].second;
+        i == (printCount - 1) ? cout<<endl : cout<<", ";
+    }
+    return true;
 }

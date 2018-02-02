@@ -18,6 +18,8 @@ int main()
             myTrie.addString(str,"rishija");
         else if (operation == "find")
             myTrie.printStringStatus(str);
+        else if (operation == "prefix")
+            myTrie.printAutoComplete(str);
         else if(operation == "exit")
             run = false;
         else
