@@ -35,12 +35,12 @@ class Trie{
     };
     
     struct dictAttributes{
-        int vector_size = 2,
-        topResults = 5,
-        dictSize = 2,
-        root = 0,
-        dictEnd = 1;
-        char dictName[12] = "myDict";
+        int vector_size,
+        topResults,
+        dictSize,
+        root,
+        dictEnd;
+        char dictName[12];
     } dictAttr;         // 32 bytes
     
     struct typecast{
@@ -60,7 +60,7 @@ class Trie{
     
 public:
     
-    Trie();
+    Trie(int vector_size, int topResults, int dictSize, int root = 0, int dictEnd = 1, const char* dictName = "myDict");
     void addString(string str, string addedBy);
     void printStringStatus(string str);
     bool printAutoComplete(string prefix);

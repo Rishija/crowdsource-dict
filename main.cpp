@@ -2,7 +2,7 @@
 
 int main()
 {
-    Trie myTrie;
+    Trie myTrie(2, 5, 2);
     bool run = true;
     
     while(run){

@@ -1,13 +1,19 @@
 #include "dict.h"
 
-Trie::Trie(){
+Trie::Trie(int vector_size, int topResults, int dictSize, int root, int dictEnd, const char* dictName){
     
-    ifstream exists(this -> dictAttr.dictName);
+    ifstream exists(dictName);
     if(!exists.good()){
-        // Initialize dictionary
         exists.close();
+        // Initialize dictionary
         fstream fout;
-        fout.open(dictAttr.dictName, ios::out | ios::binary);
+        fout.open(dictName, ios::out | ios::binary);
+        dictAttr.vector_size = vector_size;
+        dictAttr.topResults = topResults;
+        dictAttr.dictSize = dictSize;
+        dictAttr.root = root;
+        dictAttr.dictEnd = dictEnd;
+        strcpy(dictAttr.dictName, dictName);
         typecast entry;
         entry.dict = this -> dictAttr;
         fout.write((char*)&entry, sizeof(entry));
@@ -156,10 +162,8 @@ void Trie::addString(string str, string addedBy){
  */
 int Trie::searchString(string str, int start){
     
-    if(str.empty()){
-        TrieNode empty(false, "", NULL);
+    if(str.empty())
         return -1;
-    }
     
     int n = (int)str.length();
     TrieNode current = readBlock(start);
