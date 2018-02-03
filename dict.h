@@ -37,10 +37,9 @@ class Trie{
     struct dictAttributes{
         int vector_size,
         topResults,
-        dictSize,
         root,
         dictEnd;
-        char dictName[12];
+        char dictName[16];
     } dictAttr;         // 32 bytes
     
     struct typecast{

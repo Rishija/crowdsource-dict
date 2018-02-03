@@ -11,11 +11,11 @@ int main()
         getline(cin, input);
         
         stringstream ss(input);
-        string operation="", str="";
-        ss>>operation>>str;
+        string operation="", str="", user="";
+        ss>>operation>>str>>user;
         
         if(operation == "add")
-            myTrie.addString(str,"rishija");
+            myTrie.addString(str,user);
         else if (operation == "find")
             myTrie.printStringStatus(str);
         else if (operation == "prefix")

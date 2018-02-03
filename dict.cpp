@@ -2,15 +2,17 @@
 
 Trie::Trie(int vector_size, int topResults, int dictSize, int root, int dictEnd, const char* dictName){
     
-    ifstream exists(dictName);
-    if(!exists.good()){
+    fstream exists;
+    exists.open(dictName, ios::in | ios:: binary);
+    int size = exists.tellg();
+//    ifstream exists(dictName);
+    if(size < 0){
         exists.close();
         // Initialize dictionary
         fstream fout;
         fout.open(dictName, ios::out | ios::binary);
         dictAttr.vector_size = vector_size;
         dictAttr.topResults = topResults;
-        dictAttr.dictSize = dictSize;
         dictAttr.root = root;
         dictAttr.dictEnd = dictEnd;
         strcpy(dictAttr.dictName, dictName);
@@ -100,6 +102,18 @@ int Trie::addNode(int rootBlockNo, int index, bool val, string addedBy, time_t t
     writeBlock(newNode, this -> dictAttr.dictEnd);
     modify.alpha[index] = dictAttr.dictEnd;
     writeBlock(modify, rootBlockNo);
+    
+    // increment dictEnd in file
+    fstream fp;
+    fp.open(dictAttr.dictName, ios::binary | ios::in | ios::out);
+    fp.seekg(12);
+    int dictEnd;
+    fp.read((char*)&dictEnd, sizeof(int));
+    ++dictEnd;
+    fp.seekp(12);
+    fp.write((char*)&dictEnd, sizeof(int));
+    fp.close();
+    
     ++(this -> dictAttr.dictEnd);
     return dictAttr.dictEnd - 1;
 }
