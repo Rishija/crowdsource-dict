@@ -3,10 +3,10 @@
 int main()
 {
     Trie myTrie(2, 5, 2);
-    bool run = true;
-    
-    while(run){
-        cout<<"> ";
+//    bool run = true;
+    // Without loop : server side implication
+//    while(run){
+//        cout<<"> ";
         string input;
         getline(cin, input);
         
@@ -20,11 +20,11 @@ int main()
             myTrie.printStringStatus(str);
         else if (operation == "prefix")
             myTrie.printAutoComplete(str);
-        else if(operation == "exit")
-            run = false;
+//        else if(operation == "exit")
+//            run = false;
         else
             cout<<"Invalid"<<endl;
-    }
+//    }
     
     return 0;
 }

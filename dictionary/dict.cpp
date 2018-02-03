@@ -207,7 +207,8 @@ void Trie::printStringStatus(string str){
     
     int blockNo = searchString(str, dictAttr.root);
     if(blockNo < 0){
-        cout<<"Error not yet added to the dictionary"<<endl;
+        // No output : server side implication
+        // cout<<"Error not yet added to the dictionary"<<endl;
         return;
     }
     TrieNode information = readBlock(blockNo);
@@ -216,7 +217,8 @@ void Trie::printStringStatus(string str){
     writeBlock(information, blockNo);
     
     if(!information.isString){
-        cout<<"Error not yet added to the dictionary"<<endl;
+        // No output : server side implication
+        // cout<<"Error not yet added to the dictionary"<<endl;
         return;
     }
     
