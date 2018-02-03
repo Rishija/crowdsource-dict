@@ -3,3 +3,4 @@
 dict
 myDict
 .DS_Store
+*.pyc
