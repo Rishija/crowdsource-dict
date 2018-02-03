@@ -1,10 +1,10 @@
 # from handleData init import *
 from handleData import *
 from init import *
-import select, sys
+import select
 
 def sendErrorMsg(sockfd, error):
-    sockfd.send("\33[31m\33[1m " + error + "\33[0m\n")
+    sockfd.send("\33[31m\33[1m\r " + error + "\33[0m\n")
 
 if __name__ == "__main__":
 
@@ -45,6 +45,7 @@ if __name__ == "__main__":
                     isAdmin = name in admins
                     activeUsers[addr]=[name, isAdmin]    # add in active connections
                     print "Client (%s, %s) connected" % addr," [",activeUsers[addr][0],"]"
+                    print "list is: ", activeUsers
                     sockfd.send("\33[32m\33[1m Welcome to `Dictionary of errors :P `. Enter 'exit' anytime to exit\n\33[0m")
 
             # Request from client
@@ -57,13 +58,29 @@ if __name__ == "__main__":
                     
                     #get addr of client sending the message
                     i,p=sock.getpeername()
+                    print "i, p: ", i, p
                     rec = activeUsers[(i,p)]
-                    out, err = handle(data, rec[0], True) if (rec[1] == True ) else handle(data)
+                    print "record: ", rec
+
+                    out, err = None, None
+
+                    if(rec[1] == True):
+                        out, err = handle(data, rec[0], True)
+                    else:
+                        out, err = handle(data)
+
+                    # out, err = handle(data, rec[0], True) if (rec[1] == True ) else handle(data)
+                    # print "In server out, err: ", out, err
                     if(err == "end"):
                         print "Client (%s, %s) is offline" % (i,p)," [",activeUsers[(i,p)][0],"]"
                         del activeUsers[(i,p)]
                         connected_list.remove(sock)
                         sock.close()
+                    else:
+                        if(err):
+                            sendErrorMsg(sock, err)
+                        else:
+                            sock.send("\r"+out)
             
                 except:
                     (i,p)=sock.getpeername()
