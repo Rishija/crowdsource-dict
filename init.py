@@ -1,4 +1,4 @@
-import socket
+import socket, os
 from subprocess import *
 
 def compile():
@@ -8,6 +8,10 @@ def compile():
 		return False
 	return True
 
+
+detailsPath = os.path.join(os.getcwd(), "details")
+if(os.path.isdir(detailsPath) == False):
+	os.mkdir("details")
 '''
 `Record` is dictionary to store connected clients where
 key : socket address of client

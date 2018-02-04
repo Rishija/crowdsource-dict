@@ -41,9 +41,12 @@ def main():
                 if not data :
                     print '\33[31m\33[1m\r DISCONNECTED!!\n \33[0m'
                     sys.exit()
-                else :
+                elif data == "get" :
+                    details = raw_input("\rEnter error details: \n")
+                    mySock.send(details)
+                else:
                     sys.stdout.write(data + "\n")
-                    display()
+                display()
         
             #user entered a message
             else :

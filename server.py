@@ -1,7 +1,6 @@
-# from handleData init import *
-from handleData import *
+from handleInput import *
 from init import *
-import select
+import select, sys
 
 def sendErrorMsg(sockfd, error):
     sockfd.send("\33[31m\33[1m\r " + error + "\33[0m\n")
@@ -45,7 +44,7 @@ if __name__ == "__main__":
                     isAdmin = name in admins
                     activeUsers[addr]=[name, isAdmin]    # add in active connections
                     print "Client (%s, %s) connected" % addr," [",activeUsers[addr][0],"]"
-                    print "list is: ", activeUsers
+                    # print "list is: ", activeUsers
                     sockfd.send("\33[32m\33[1m Welcome to `Dictionary of errors :P `. Enter 'exit' anytime to exit\n\33[0m")
 
             # Request from client
@@ -54,20 +53,20 @@ if __name__ == "__main__":
                     data1 = sock.recv(buffer)
                     #print "sock is: ",sock
                     data=data1[:data1.index("\n")]
-                    print "\ndata received: ",data
+                    # print "\ndata received: ",data
                     
                     #get addr of client sending the message
                     i,p=sock.getpeername()
-                    print "i, p: ", i, p
+                    # print "i, p: ", i, p
                     rec = activeUsers[(i,p)]
-                    print "record: ", rec
+                    # print "record: ", rec
 
                     out, err = None, None
 
                     if(rec[1] == True):
-                        out, err = handle(data, rec[0], True)
+                        out, err = handle(data, sock, rec[0], True)
                     else:
-                        out, err = handle(data)
+                        out, err = handle(data, sock)
 
                     # out, err = handle(data, rec[0], True) if (rec[1] == True ) else handle(data)
                     # print "In server out, err: ", out, err
