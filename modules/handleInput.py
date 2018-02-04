@@ -31,6 +31,13 @@ def handle(data, sock, user = "", isAdmin = False):
 
 	if(len(args) > 1):
 		word = args[1]
+		
+	if (action == "help"):
+		return (helpMsg, None)
+
+	if(word.isalpha() == False):
+		return (None, "Invalid format")
+	word = word.lower()
 
 	if action == "add" and word:
 		if(isAdmin == False):
@@ -66,9 +73,6 @@ def handle(data, sock, user = "", isAdmin = False):
 
 		# out is NULL if there is no word with entered prefix
 		return (out,None) if (out) else (None, "No error with given prefix")
-
-	elif action == "help":
-		return (helpMsg, None)
 
 	else:
 		return (None, "Invalid action")

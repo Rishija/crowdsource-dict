@@ -13,6 +13,16 @@ int main()
         stringstream ss(input);
         string operation="", str="", user="";
         ss>>operation>>str>>user;
+
+        int n = str.size();
+        for(int i=0; i<n; ++i){
+            if(isupper(str[i]))
+                str[i] = tolower(str[i]);
+            else if(!islower(str[i])){
+                cout<<-1;
+                return 0;
+            }
+        }
         
         if(operation == "add")
             myTrie.addString(str,user);
