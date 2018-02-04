@@ -55,7 +55,7 @@ class Trie{
     TrieNode readBlock(int blockNo);
     void writeBlock(TrieNode node, int blockNo);
     int getIndex(char a);
-    void findAutoComplete(int blockNo, vector<pair<int, string> > &words, string prefix, int vectorSize, int &insertIndex);
+    void findAutoComplete(int blockNo, vector<pair<int, string> > &words, string prefix, int &vectorSize, int &insertIndex);
     
 public:
     

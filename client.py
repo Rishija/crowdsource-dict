@@ -1,9 +1,9 @@
 import socket, select, string, sys
 
 def display() :
-	header = "\33[32m\33[1m"+"> "+"\33[0m"
-	sys.stdout.write(header)
-	sys.stdout.flush()
+    header = "\33[33m\33[1m"+"> "+"\33[0m"
+    sys.stdout.write(header)
+    sys.stdout.flush()
 
 def main():
 
@@ -25,7 +25,7 @@ def main():
         sys.exit()
 
     #if connected
-    name=raw_input("\33[32m\33[1m Enter username: \33[0m")
+    name=raw_input("\33[32m\33[1m\n Enter username: \33[0m")
     mySock.send(name)
 
     while 1:

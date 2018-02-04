@@ -26,6 +26,6 @@ port = 5001
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)	# Create socket
 
 server_socket.bind(("localhost", port))		# Bind ip address and port number
-server_socket.listen(10) # Listen atmost 10 connection at any instance
+server_socket.listen(10)	# Listen atmost 10 connection at any instance
 
 connected_list.append(server_socket)	# Add server socket to the list of readable connections

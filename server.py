@@ -1,6 +1,7 @@
+import select, sys
+sys.path.append("modules/")
 from handleInput import *
 from init import *
-import select, sys
 
 def sendErrorMsg(sockfd, error):
     sockfd.send("\33[31m\33[1m\r " + error + "\33[0m\n")
@@ -44,32 +45,21 @@ if __name__ == "__main__":
                     isAdmin = name in admins
                     activeUsers[addr]=[name, isAdmin]    # add in active connections
                     print "Client (%s, %s) connected" % addr," [",activeUsers[addr][0],"]"
-                    # print "list is: ", activeUsers
-                    sockfd.send("\33[32m\33[1m Welcome to `Dictionary of errors :P `. Enter 'exit' anytime to exit\n\33[0m")
+                    sockfd.send("\33[33m\33[1m\33[5m\n\t\tWelcome to ONLINE ERRORS DICTIONARY\33[0m\n\n")
+                    helpmsg, err = handle("help", sockfd)
+                    sockfd.send(helpmsg)
 
             # Request from client
             else:
                 try:
                     data1 = sock.recv(buffer)
-                    #print "sock is: ",sock
                     data=data1[:data1.index("\n")]
-                    # print "\ndata received: ",data
-                    
-                    #get addr of client sending the message
-                    i,p=sock.getpeername()
-                    # print "i, p: ", i, p
-                    rec = activeUsers[(i,p)]
-                    # print "record: ", rec
+                    i,p=sock.getpeername()  #get addr of client sending the message
+                    record = activeUsers[(i,p)]
 
                     out, err = None, None
+                    out, err = handle(data, sock, record[0], True) if (record[1] == True ) else handle(data, sock)
 
-                    if(rec[1] == True):
-                        out, err = handle(data, sock, rec[0], True)
-                    else:
-                        out, err = handle(data, sock)
-
-                    # out, err = handle(data, rec[0], True) if (rec[1] == True ) else handle(data)
-                    # print "In server out, err: ", out, err
                     if(err == "end"):
                         print "Client (%s, %s) is offline" % (i,p)," [",activeUsers[(i,p)][0],"]"
                         del activeUsers[(i,p)]
@@ -79,7 +69,7 @@ if __name__ == "__main__":
                         if(err):
                             sendErrorMsg(sock, err)
                         else:
-                            sock.send("\r"+out)
+                            sock.send("\r" + out)
             
                 except:
                     (i,p)=sock.getpeername()

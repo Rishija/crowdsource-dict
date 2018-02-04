@@ -240,7 +240,7 @@ void Trie::printStringStatus(string str){
  @param vectorSize : maximum size of vector words
  @param insertIndex : next index where word is to be inserted
  */
-void Trie::findAutoComplete(int blockNo, vector<pair<int, string> > &words, string prefix, int vectorSize, int &insertIndex){
+void Trie::findAutoComplete(int blockNo, vector<pair<int, string> > &words, string prefix, int &vectorSize, int &insertIndex){
     
     if(!blockNo)
         return;
